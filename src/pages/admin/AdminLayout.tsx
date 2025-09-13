@@ -15,6 +15,7 @@ import {
   Calendar
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { DatabaseStatus } from '../../components/UI/LoadingSpinner';
 
 export const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -179,6 +180,9 @@ export const AdminLayout: React.FC = () => {
             <Outlet />
           </div>
         </main>
+        
+        {/* Database Status Indicator */}
+        <DatabaseStatus />
       </div>
     </div>
   );

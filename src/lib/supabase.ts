@@ -3,14 +3,22 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables not found. Using demo mode.');
-}
-
+// Create Supabase client if environment variables are available
 export const supabase = supabaseUrl && supabaseAnonKey 
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
+// Check if Supabase is configured
+export const isSupabaseConfigured = () => {
+  return supabase !== null;
+};
+
+// Log configuration status
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('Supabase environment variables not found. Using localStorage fallback mode.');
+} else {
+  console.log('Supabase configured successfully');
+}
 // Local storage keys
 const STORAGE_KEYS = {
   services: 'zentra_services',
@@ -188,15 +196,19 @@ export const uploadImage = (file: File): Promise<string> => {
 export const authenticateAdmin = async (username: string, password: string) => {
   try {
     if (supabase) {
-      const { data, error } = await supabase
-        .from('admin_credentials')
-        .select('*')
-        .eq('username', username)
-        .eq('password', password)
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from('admin_credentials')
+          .select('*')
+          .eq('username', username)
+          .eq('password', password)
+          .single();
 
-      if (data) {
-        return { success: true, user: data };
+        if (!error && data) {
+          return { success: true, user: data };
+        }
+      } catch (dbError) {
+        console.warn('Database authentication failed, falling back to localStorage:', dbError);
       }
     }
     
@@ -218,20 +230,33 @@ export const authenticateAdmin = async (username: string, password: string) => {
 export const fetchData = async (table: string) => {
   try {
     if (supabase) {
-      const { data, error } = await supabase
-        .from(table)
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (!error && data) {
-        return data;
+      try {
+        const { data, error } = await supabase
+          .from(table)
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (!error && data) {
+          console.log(`Successfully fetched ${data.length} records from ${table}`);
+          return data;
+        } else if (error) {
+          console.error(`Supabase fetch error for ${table}:`, error);
+        }
+      } catch (dbError) {
+        console.warn(`Database fetch failed for ${table}, using localStorage:`, dbError);
       }
     }
     
     // Fallback to local storage
     const storageKey = STORAGE_KEYS[table as keyof typeof STORAGE_KEYS];
-    const data = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    return data;
+    if (storageKey) {
+      const data = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      console.log(`Fetched ${data.length} records from localStorage for ${table}`);
+      return data;
+    }
+    
+    console.warn(`No storage key found for table: ${table}`);
+    return [];
   } catch (error) {
     console.error(`Error fetching ${table}:`, error);
     return [];
@@ -246,20 +271,32 @@ export const insertData = async (table: string, data: any) => {
       created_at: new Date().toISOString()
     };
 
+    let dbSuccess = false;
+    
     if (supabase) {
-      const { error } = await supabase.from(table).insert([newItem]);
-      if (!error) {
-        return { success: true };
+      try {
+        const { error } = await supabase.from(table).insert([newItem]);
+        if (!error) {
+          console.log(`Successfully inserted record into ${table}:`, newItem.id);
+          dbSuccess = true;
+        } else {
+          console.error(`Supabase insert error for ${table}:`, error);
+        }
+      } catch (dbError) {
+        console.warn(`Database insert failed for ${table}, using localStorage:`, dbError);
       }
     }
     
-    // Fallback to local storage
+    // Always update localStorage as backup or primary storage
     const storageKey = STORAGE_KEYS[table as keyof typeof STORAGE_KEYS];
-    const existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    existingData.unshift(newItem);
-    localStorage.setItem(storageKey, JSON.stringify(existingData));
+    if (storageKey) {
+      const existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      existingData.unshift(newItem);
+      localStorage.setItem(storageKey, JSON.stringify(existingData));
+      console.log(`Updated localStorage for ${table}`);
+    }
     
-    return { success: true };
+    return { success: true, usedDatabase: dbSuccess };
   } catch (error) {
     console.error(`Error inserting into ${table}:`, error);
     throw error;
@@ -268,24 +305,36 @@ export const insertData = async (table: string, data: any) => {
 
 export const updateData = async (table: string, id: string, data: any) => {
   try {
+    let dbSuccess = false;
+    
     if (supabase) {
-      const { error } = await supabase.from(table).update(data).eq('id', id);
-      if (!error) {
-        return { success: true };
+      try {
+        const { error } = await supabase.from(table).update(data).eq('id', id);
+        if (!error) {
+          console.log(`Successfully updated record in ${table}:`, id);
+          dbSuccess = true;
+        } else {
+          console.error(`Supabase update error for ${table}:`, error);
+        }
+      } catch (dbError) {
+        console.warn(`Database update failed for ${table}, using localStorage:`, dbError);
       }
     }
     
-    // Fallback to local storage
+    // Always update localStorage as backup or primary storage
     const storageKey = STORAGE_KEYS[table as keyof typeof STORAGE_KEYS];
-    const existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    const index = existingData.findIndex((item: any) => item.id === id);
-    
-    if (index !== -1) {
-      existingData[index] = { ...existingData[index], ...data };
-      localStorage.setItem(storageKey, JSON.stringify(existingData));
+    if (storageKey) {
+      const existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      const index = existingData.findIndex((item: any) => item.id === id);
+      
+      if (index !== -1) {
+        existingData[index] = { ...existingData[index], ...data };
+        localStorage.setItem(storageKey, JSON.stringify(existingData));
+        console.log(`Updated localStorage for ${table}:`, id);
+      }
     }
     
-    return { success: true };
+    return { success: true, usedDatabase: dbSuccess };
   } catch (error) {
     console.error(`Error updating ${table}:`, error);
     throw error;
@@ -294,20 +343,32 @@ export const updateData = async (table: string, id: string, data: any) => {
 
 export const deleteData = async (table: string, id: string) => {
   try {
+    let dbSuccess = false;
+    
     if (supabase) {
-      const { error } = await supabase.from(table).delete().eq('id', id);
-      if (!error) {
-        return { success: true };
+      try {
+        const { error } = await supabase.from(table).delete().eq('id', id);
+        if (!error) {
+          console.log(`Successfully deleted record from ${table}:`, id);
+          dbSuccess = true;
+        } else {
+          console.error(`Supabase delete error for ${table}:`, error);
+        }
+      } catch (dbError) {
+        console.warn(`Database delete failed for ${table}, using localStorage:`, dbError);
       }
     }
     
-    // Fallback to local storage
+    // Always update localStorage as backup or primary storage
     const storageKey = STORAGE_KEYS[table as keyof typeof STORAGE_KEYS];
-    const existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    const filteredData = existingData.filter((item: any) => item.id !== id);
-    localStorage.setItem(storageKey, JSON.stringify(filteredData));
+    if (storageKey) {
+      const existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      const filteredData = existingData.filter((item: any) => item.id !== id);
+      localStorage.setItem(storageKey, JSON.stringify(filteredData));
+      console.log(`Updated localStorage for ${table} (deleted):`, id);
+    }
     
-    return { success: true };
+    return { success: true, usedDatabase: dbSuccess };
   } catch (error) {
     console.error(`Error deleting from ${table}:`, error);
     throw error;
@@ -326,7 +387,7 @@ export const sendBookingNotification = async (bookingData: any) => {
       return { success: false, error: 'API key not configured' };
     }
     
-    const response = await fetch('/api/resend/emails', {
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${resendApiKey}`,
@@ -378,7 +439,7 @@ export const sendBookingNotification = async (bookingData: any) => {
   } catch (error) {
     console.error('Error sending email:', error);
     // Don't throw error - we don't want booking to fail if email fails
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };
 
@@ -386,7 +447,10 @@ export const sendBookingNotification = async (bookingData: any) => {
 export const submitBooking = async (bookingData: any) => {
   try {
     // Save booking to database/localStorage
-    const result = await insertData('bookings', bookingData);
+    const result = await insertData('bookings', {
+      ...bookingData,
+      status: 'pending'
+    });
     
     // Send email notification (don't wait for it to complete)
     sendBookingNotification(bookingData).catch(error => {
@@ -427,7 +491,12 @@ export const sendReviewNotification = async (reviewData: any) => {
     const fromEmail = import.meta.env.VITE_RESEND_FROM_EMAIL || 'noreply@zentraholdings.com';
     const toEmail = import.meta.env.VITE_RESEND_TO_EMAIL || 'admin@zentraholdings.com';
     
-    const response = await fetch('/api/resend/emails', {
+    if (!resendApiKey) {
+      console.warn('Resend API key not configured. Skipping review notification.');
+      return { success: false, error: 'API key not configured' };
+    }
+    
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${resendApiKey}`,
@@ -473,6 +542,6 @@ export const sendReviewNotification = async (reviewData: any) => {
     return { success: true, id: result.id };
   } catch (error) {
     console.error('Error sending review notification:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };

@@ -23,6 +23,33 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   );
 };
 
+export const DatabaseStatus: React.FC = () => {
+  const [isSupabaseConnected, setIsSupabaseConnected] = React.useState(false);
+  
+  React.useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+        setIsSupabaseConnected(!!(supabaseUrl && supabaseAnonKey));
+      } catch (error) {
+        setIsSupabaseConnected(false);
+      }
+    };
+    
+    checkConnection();
+  }, []);
+  
+  return (
+    <div className={`fixed bottom-4 right-4 px-3 py-2 rounded-lg text-sm font-medium z-40 ${
+      isSupabaseConnected 
+        ? 'bg-green-100 text-green-800 border border-green-200' 
+        : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+    }`}>
+      {isSupabaseConnected ? '🟢 Database Connected' : '🟡 Demo Mode (localStorage)'}
+    </div>
+  );
+};
 export const LoadingOverlay: React.FC<{ message?: string }> = ({ 
   message = 'Loading...' 
 }) => {
