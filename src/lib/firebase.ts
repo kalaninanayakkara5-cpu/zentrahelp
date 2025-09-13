@@ -5,12 +5,13 @@ import { getAuth } from 'firebase/auth';
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyDUK6N9wKmVk0aMdECCplWVVzpFNiGirSg",
+  authDomain: "zentra-land.firebaseapp.com",
+  projectId: "zentra-land",
+  storageBucket: "zentra-land.firebasestorage.app",
+  messagingSenderId: "1044458233136",
+  appId: "1:1044458233136:web:ec627f3b9748864bd9fcf5",
+  measurementId: "G-SRFEE54WNE"
 };
 
 // Initialize Firebase
