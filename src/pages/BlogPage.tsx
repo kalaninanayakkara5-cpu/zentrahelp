@@ -92,9 +92,10 @@ export const BlogPage: React.FC = () => {
 
   const filteredPosts = blogPosts.filter(post => {
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesSearch =
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 
@@ -182,10 +183,13 @@ export const BlogPage: React.FC = () => {
                   <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
                     {post.category}
                   </span>
-                  <button className="flex items-center space-x-1 text-green-600 hover:text-green-700 font-medium">
+                  <Link
+                    to={`/blog/${post.id}`}
+                    className="flex items-center space-x-1 text-green-600 hover:text-green-700 font-medium"
+                  >
                     <span>Read More</span>
                     <ArrowRight className="h-4 w-4" />
-                  </button>
+                  </Link>
                 </div>
                 
                 <div className="mt-4 pt-4 border-t border-gray-100">
