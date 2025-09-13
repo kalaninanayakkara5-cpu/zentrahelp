@@ -97,20 +97,6 @@ export const ServicesPage: React.FC = () => {
     );
   }
 
-  const getServiceImage = (service: Service) => {
-    if (service.image) return service.image;
-    
-    // Default images based on service type
-    const defaultImages: { [key: string]: string } = {
-      'maintenance': 'https://images.pexels.com/photos/1453499/pexels-photo-1453499.jpeg?auto=compress&cs=tinysrgb&w=600',
-      'design': 'https://images.pexels.com/photos/1080696/pexels-photo-1080696.jpeg?auto=compress&cs=tinysrgb&w=600',
-      'installation': 'https://images.pexels.com/photos/416978/pexels-photo-416978.jpeg?auto=compress&cs=tinysrgb&w=600',
-      'general': 'https://images.pexels.com/photos/1049298/pexels-photo-1049298.jpeg?auto=compress&cs=tinysrgb&w=600'
-    };
-    
-    return defaultImages[service.category] || defaultImages.general;
-  };
-
   const getServiceFeatures = (service: Service) => {
     // Generate relevant features based on service title and category
     const featuresByCategory: { [key: string]: string[] } = {
@@ -132,17 +118,6 @@ export const ServicesPage: React.FC = () => {
         'Warranty included',
         'Post-installation support'
       ],
-      'general': [
-        'Licensed professionals',
-        'Insured service',
-        'Satisfaction guaranteed',
-        'Free consultation'
-      ]
-    };
-    
-    return featuresByCategory[service.category] || featuresByCategory.general;
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -156,6 +131,14 @@ export const ServicesPage: React.FC = () => {
         </div>
 
         {/* Services Grid */}
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading services...</p>
+            </div>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
             <motion.div
@@ -168,7 +151,7 @@ export const ServicesPage: React.FC = () => {
             >
               <div className="h-48 overflow-hidden">
                 <img
-                  src={getServiceImage(service)}
+                  src={service.image || 'https://images.pexels.com/photos/1453499/pexels-photo-1453499.jpeg?auto=compress&cs=tinysrgb&w=600'}
                   alt={service.title}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />
@@ -195,8 +178,9 @@ export const ServicesPage: React.FC = () => {
             </motion.div>
           ))}
         </div>
+        )}
 
-        {services.length === 0 && (
+        {services.length === 0 && !loading && (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">No services available at the moment.</p>
           </div>
@@ -213,7 +197,7 @@ export const ServicesPage: React.FC = () => {
           <div>
             <div className="mb-6">
               <img
-                src={getServiceImage(selectedService)}
+                src={selectedService.image || 'https://images.pexels.com/photos/1453499/pexels-photo-1453499.jpeg?auto=compress&cs=tinysrgb&w=600'}
                 alt={selectedService.title}
                 className="w-full h-64 object-cover rounded-lg"
               />

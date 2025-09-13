@@ -317,9 +317,14 @@ export const deleteData = async (table: string, id: string) => {
 // Email notification service using Resend API
 export const sendBookingNotification = async (bookingData: any) => {
   try {
-    const resendApiKey = import.meta.env.VITE_RESEND_API_KEY || 're_JDm2W9B5_4d7chTH9epUuXgieBUUfXmvb';
+    const resendApiKey = import.meta.env.VITE_RESEND_API_KEY;
     const fromEmail = import.meta.env.VITE_RESEND_FROM_EMAIL || 'noreply@zentraholdings.com';
     const toEmail = import.meta.env.VITE_RESEND_TO_EMAIL || 'admin@zentraholdings.com';
+    
+    if (!resendApiKey) {
+      console.warn('Resend API key not configured. Skipping email notification.');
+      return { success: false, error: 'API key not configured' };
+    }
     
     const response = await fetch('/api/resend/emails', {
       method: 'POST',
@@ -418,14 +423,9 @@ export const submitTestimonial = async (testimonialData: any) => {
 // Send review notification email
 export const sendReviewNotification = async (reviewData: any) => {
   try {
-    const resendApiKey = import.meta.env.VITE_RESEND_API_KEY || 're_JDm2W9B5_4d7chTH9epUuXgieBUUfXmvb';
+    const resendApiKey = import.meta.env.VITE_RESEND_API_KEY;
     const fromEmail = import.meta.env.VITE_RESEND_FROM_EMAIL || 'noreply@zentraholdings.com';
     const toEmail = import.meta.env.VITE_RESEND_TO_EMAIL || 'admin@zentraholdings.com';
-    
-    if (!resendApiKey) {
-      console.warn('Resend API key not configured. Skipping review notification email.');
-      return { success: false, error: 'API key not configured' };
-    }
     
     const response = await fetch('/api/resend/emails', {
       method: 'POST',

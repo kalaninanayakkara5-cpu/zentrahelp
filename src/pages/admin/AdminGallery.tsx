@@ -40,6 +40,7 @@ export const AdminGallery: React.FC = () => {
     { value: 'irrigation', label: 'Irrigation' },
     { value: 'general', label: 'General' }
   ];
+  
   const {
     register,
     handleSubmit,

@@ -93,17 +93,6 @@ export const ProjectsPage: React.FC = () => {
     };
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading projects...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -117,6 +106,14 @@ export const ProjectsPage: React.FC = () => {
         </div>
 
         {/* Projects Grid */}
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading projects...</p>
+            </div>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {projects.map((project, index) => {
             const images = getProjectImages(project);
@@ -218,6 +215,7 @@ export const ProjectsPage: React.FC = () => {
             );
           })}
         </div>
+        )}
 
         {projects.length === 0 && (
           <div className="text-center py-12">

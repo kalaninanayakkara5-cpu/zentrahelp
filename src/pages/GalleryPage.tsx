@@ -22,6 +22,7 @@ export const GalleryPage: React.FC = () => {
     { value: 'irrigation', label: 'Irrigation' },
     { value: 'general', label: 'General' }
   ];
+  
   // Default gallery images to show immediately
   const defaultGallery = [
     { id: '1', image: 'https://images.pexels.com/photos/1453499/pexels-photo-1453499.jpeg?auto=compress&cs=tinysrgb&w=800', caption: 'Professional Lawn Maintenance', category: 'lawn-care', created_at: new Date().toISOString() },
@@ -55,23 +56,6 @@ export const GalleryPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const getImageUrl = (image: GalleryImage) => {
-    if (image.image) return image.image;
-    
-    // Default gallery images
-    const defaultImages = [
-      'https://images.pexels.com/photos/1453499/pexels-photo-1453499.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/1080696/pexels-photo-1080696.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/416978/pexels-photo-416978.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/1049298/pexels-photo-1049298.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/1301856/pexels-photo-1301856.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg?auto=compress&cs=tinysrgb&w=800',
-    ];
-    
-    const index = images.indexOf(image) % defaultImages.length;
-    return defaultImages[index];
   };
 
   const filteredImages = images.filter(image => {

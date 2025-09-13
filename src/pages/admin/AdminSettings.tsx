@@ -61,17 +61,30 @@ export const AdminSettings: React.FC = () => {
 
       // Update credentials in database
       if (supabase) {
-        const { error } = await supabase
-          .from('admin_credentials')
-          .update({
-            username: data.newUsername,
-            password: data.newPassword, // In production, this would be hashed
-            updated_at: new Date().toISOString()
-          })
-          .eq('username', 'admin123');
+        try {
+          const { error } = await supabase
+            .from('admin_credentials')
+            .update({
+              username: data.newUsername,
+              password: data.newPassword, // In production, this would be hashed
+              updated_at: new Date().toISOString()
+            })
+            .eq('username', 'admin123');
 
-        if (error) throw error;
+          if (error) throw error;
+        } catch (dbError) {
+          console.warn('Database update failed, updating local storage only:', dbError);
+        }
       }
+
+      // Update local storage for demo
+      const adminCredentials = JSON.parse(localStorage.getItem('zentra_admin_credentials') || '[]');
+      const updatedCredentials = adminCredentials.map((cred: any) => 
+        cred.username === 'admin123' 
+          ? { ...cred, username: data.newUsername, password: data.newPassword, updated_at: new Date().toISOString() }
+          : cred
+      );
+      localStorage.setItem('zentra_admin_credentials', JSON.stringify(updatedCredentials));
 
       // Update local storage
       localStorage.setItem('admin_user', JSON.stringify({

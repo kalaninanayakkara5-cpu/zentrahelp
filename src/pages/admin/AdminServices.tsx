@@ -29,7 +29,6 @@ export const AdminServices: React.FC = () => {
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const {
     register,
@@ -64,7 +63,6 @@ export const AdminServices: React.FC = () => {
     try {
       const imageUrl = await uploadImage(file);
       setSelectedImage(imageUrl);
-      setImageFile(file);
       toast.success('Image uploaded successfully');
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -91,7 +89,6 @@ export const AdminServices: React.FC = () => {
       setIsModalOpen(false);
       setEditingService(null);
       setSelectedImage('');
-      setImageFile(null);
       reset();
       fetchServices();
     } catch (error) {
@@ -127,7 +124,6 @@ export const AdminServices: React.FC = () => {
   const handleAddNew = () => {
     setEditingService(null);
     setSelectedImage('');
-    setImageFile(null);
     reset();
     setIsModalOpen(true);
   };
@@ -136,7 +132,6 @@ export const AdminServices: React.FC = () => {
     setIsModalOpen(false);
     setEditingService(null);
     setSelectedImage('');
-    setImageFile(null);
     reset();
   };
 
@@ -316,7 +311,6 @@ export const AdminServices: React.FC = () => {
                     type="button"
                     onClick={() => {
                       setSelectedImage('');
-                      setImageFile(null);
                     }}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
                   >
