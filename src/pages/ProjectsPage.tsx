@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, User, Calendar } from 'lucide-react';
-import { fetchData } from '../lib/supabase';
+import { fetchData } from '../lib/firebase';
 import { Project } from '../types';
 
 export const ProjectsPage: React.FC = () => {

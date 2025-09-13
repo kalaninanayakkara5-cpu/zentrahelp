@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Star, CheckCircle, Leaf, Award, Shield } from 'lucide-react';
-import { fetchData, submitTestimonial } from '../lib/supabase';
+import { fetchData, submitTestimonial } from '../lib/firebase';
 import { SliderImage, Testimonial } from '../types';
 import { ParticlesBackground } from '../components/UI/ParticlesBackground';
 

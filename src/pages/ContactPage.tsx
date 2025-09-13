@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
-import { submitBooking } from '../lib/supabase';
+import { submitBooking } from '../lib/firebase';
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),

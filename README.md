@@ -25,7 +25,7 @@ A full-stack web application for Zentra Holdings, a professional lawn care and l
 - **Settings** for admin credentials
 
 ### Technical Features
-- **Supabase Integration** for database and storage
+- **Firebase Integration** for database and storage
 - **Local Storage Fallback** for demo mode
 - **Email Notifications** via Resend API
 - **Image Upload** with preview functionality
@@ -38,7 +38,7 @@ A full-stack web application for Zentra Holdings, a professional lawn care and l
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Supabase account (optional - works in demo mode)
+- Firebase account (optional - works in demo mode)
 - Resend account for email notifications (optional)
 
 ### Installation
@@ -60,8 +60,12 @@ A full-stack web application for Zentra Holdings, a professional lawn care and l
    ```
    
    Configure your environment variables:
-   - `VITE_SUPABASE_URL` - Your Supabase project URL
-   - `VITE_SUPABASE_ANON_KEY` - Your Supabase anonymous key
+   - `VITE_FIREBASE_API_KEY` - Your Firebase API key
+   - `VITE_FIREBASE_AUTH_DOMAIN` - Your Firebase auth domain
+   - `VITE_FIREBASE_PROJECT_ID` - Your Firebase project ID
+   - `VITE_FIREBASE_STORAGE_BUCKET` - Your Firebase storage bucket
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID` - Your Firebase messaging sender ID
+   - `VITE_FIREBASE_APP_ID` - Your Firebase app ID
    - `VITE_RESEND_API_KEY` - Your Resend API key for emails
    - `VITE_RESEND_FROM_EMAIL` - From email address
    - `VITE_RESEND_TO_EMAIL` - Admin email address
@@ -76,14 +80,23 @@ A full-stack web application for Zentra Holdings, a professional lawn care and l
    - Admin panel: `http://localhost:5173/admin`
    - Admin credentials: `admin123` / `admin123`
 
-## Database Setup (Optional)
+## Firebase Setup (Optional)
 
-The application works in demo mode with localStorage, but for production use:
+The application works in demo mode with localStorage, but for production use with Firebase:
 
-1. **Create a Supabase project**
-2. **Run the migrations** in the `supabase/migrations` folder
+1. **Create a Firebase project** at https://console.firebase.google.com
+2. **Enable Firestore Database** in your Firebase project
+3. **Enable Firebase Storage** for image uploads
+4. **Set up Firestore collections** with the following structure:
+   - `services` - Service offerings
+   - `projects` - Project showcases
+   - `gallery` - Image gallery
+   - `testimonials` - Customer reviews
+   - `slider_images` - Homepage slider
+   - `admin_credentials` - Admin login
+   - `bookings` - Service bookings
 3. **Configure environment variables**
-4. **Enable Row Level Security** policies
+4. **Set up Firestore security rules** as needed
 
 ## Project Structure
 
@@ -108,7 +121,7 @@ src/
 - **React Router** for navigation
 - **React Hook Form** with Yup validation
 - **Framer Motion** for animations
-- **Supabase** for backend services
+- **Firebase** for backend services
 - **Resend** for email notifications
 - **Lucide React** for icons
 
@@ -132,7 +145,7 @@ npm run build
 ### Deploy to Vercel/Netlify
 The application is ready for deployment to static hosting platforms. Make sure to:
 1. Configure environment variables
-2. Set up Supabase database
+2. Set up Firebase project
 3. Configure email service (optional)
 
 ## Admin Panel Usage

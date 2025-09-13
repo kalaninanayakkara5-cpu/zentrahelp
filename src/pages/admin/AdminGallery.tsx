@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
 import { Plus, Edit, Trash2, Eye, Upload, X } from 'lucide-react';
-import { fetchData, insertData, updateData, deleteData, uploadImage } from '../../lib/supabase';
+import { fetchData, insertData, updateData, deleteData, uploadImage } from '../../lib/firebase';
 import { GalleryImage } from '../../types';
 import { Modal } from '../../components/UI/Modal';
 import { LoadingSpinner } from '../../components/UI/LoadingSpinner';

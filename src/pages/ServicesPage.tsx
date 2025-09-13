@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { fetchData } from '../lib/supabase';
+import { fetchData } from '../lib/firebase';
 import { Service } from '../types';
 import { Modal } from '../components/UI/Modal';
 

@@ -13,7 +13,7 @@ import {
   Images,
   Sliders
 } from 'lucide-react';
-import { fetchData } from '../../lib/supabase';
+import { fetchData } from '../../lib/firebase';
 
 interface Stats {
   totalServices: number;

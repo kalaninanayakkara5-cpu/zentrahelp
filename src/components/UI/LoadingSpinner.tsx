@@ -29,9 +29,9 @@ export const DatabaseStatus: React.FC = () => {
   React.useEffect(() => {
     const checkConnection = async () => {
       try {
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-        setIsSupabaseConnected(!!(supabaseUrl && supabaseAnonKey));
+        const firebaseApiKey = import.meta.env.VITE_FIREBASE_API_KEY;
+        const firebaseProjectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+        setIsSupabaseConnected(!!(firebaseApiKey && firebaseProjectId));
       } catch (error) {
         setIsSupabaseConnected(false);
       }
@@ -43,10 +43,10 @@ export const DatabaseStatus: React.FC = () => {
   return (
     <div className={`fixed bottom-4 right-4 px-3 py-2 rounded-lg text-sm font-medium z-40 ${
       isSupabaseConnected 
-        ? 'bg-green-100 text-green-800 border border-green-200' 
+        ? 'bg-green-100 text-green-800 border border-green-200'
         : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
     }`}>
-      {isSupabaseConnected ? '🟢 Database Connected' : '🟡 Demo Mode (localStorage)'}
+      {isSupabaseConnected ? '🟢 Firebase Connected' : '🟡 Demo Mode (localStorage)'}
     </div>
   );
 };

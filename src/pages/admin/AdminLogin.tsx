@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
 import { Leaf, Eye, EyeOff } from 'lucide-react';
-import { authenticateAdmin } from '../../lib/supabase';
+import { authenticateAdmin } from '../../lib/firebase';
 
 const schema = yup.object().shape({
   username: yup.string().required('Username is required'),

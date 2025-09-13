@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
 import { Save, Eye, EyeOff, Key, User, Shield } from 'lucide-react';
-import { supabase, updateData, fetchData } from '../../lib/supabase';
+import { updateData, fetchData } from '../../lib/firebase';
 import { LoadingSpinner } from '../../components/UI/LoadingSpinner';
 
 const schema = yup.object().shape({

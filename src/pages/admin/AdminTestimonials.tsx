@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Check, X, Eye, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { fetchData, updateData, deleteData } from '../../lib/supabase';
+import { fetchData, updateData, deleteData } from '../../lib/firebase';
 import { Testimonial } from '../../types';
 import { Modal } from '../../components/UI/Modal';
 import { LoadingSpinner } from '../../components/UI/LoadingSpinner';

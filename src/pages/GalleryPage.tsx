@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { X, Plus } from 'lucide-react';
-import { fetchData } from '../lib/supabase';
+import { fetchData } from '../lib/firebase';
 import { GalleryImage } from '../types';
 import { Modal } from '../components/UI/Modal';
 
